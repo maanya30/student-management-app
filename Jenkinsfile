@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -11,7 +10,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master', url:'https://github.com/maanya30/student-management-app.git',
+                git branch: 'main',
+                url: 'https://github.com/maanya30/student-management-app.git',
                 credentialsId: 'github-token'
             }
         }
@@ -32,19 +32,19 @@ pipeline {
             steps {
                 sh 'mvn package'
             }
-        
-        
         }
+
         stage('Run Application') {
             steps {
                 sh 'mvn exec:java -Dexec.mainClass="com.example.app.App"'
             }
         }
     }
+
     post {
 
         success {
-            emailext (
+            emailext(
                 subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Build succeeded!\nCheck: ${BUILD_URL}",
                 to: "maanyav30@gmail.com"
@@ -52,10 +52,11 @@ pipeline {
         }
 
         failure {
-            emailext (
+            emailext(
                 subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Build failed!\nCheck: ${BUILD_URL}",
                 to: "maanyav30@gmail.com"
             )
         }
     }
+}
