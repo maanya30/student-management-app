@@ -22,4 +22,19 @@ pipeline {
             }
         }
     }
+
+    post {
+
+        success {
+            mail to: 'maanyav30@gmail.com',
+            subject: 'Jenkins Build Success',
+            body: 'The Maven project build completed successfully.'
+        }
+
+        failure {
+            mail to: 'maanyav30@gmail.com',
+            subject: 'Jenkins Build Failed',
+            body: 'The Maven project build has failed.'
+        }
+    }
 }
