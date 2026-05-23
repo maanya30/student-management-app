@@ -1,8 +1,23 @@
-pipeline {
 
+    
+
+Jenkinsfile
+pipeline {
     agent any
 
+    tools {
+        maven 'Maven'
+        jdk 'JDK21'
+    }
+
     stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url:'https://github.com/maanya30/student-management-app.git',
+                credentialsId: 'github-token'
+            }
+        }
 
         stage('Build') {
             steps {
@@ -20,21 +35,30 @@ pipeline {
             steps {
                 sh 'mvn package'
             }
+        
+        
+        }
+        stage('Run Application') {
+            steps {
+                sh 'mvn exec:java -Dexec.mainClass="com.example.app.App"'
+            }
         }
     }
-
     post {
 
         success {
-            mail to: 'maanyav30@gmail.com',
-            subject: 'Jenkins Build Success',
-            body: 'The Maven project build completed successfully.'
+            emailext (
+                subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build succeeded!\nCheck: ${BUILD_URL}",
+                to: "maanyav30@gmail.com"
+            )
         }
 
         failure {
-            mail to: 'maanyav30@gmail.com',
-            subject: 'Jenkins Build Failed',
-            body: 'The Maven project build has failed.'
+            emailext (
+                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build failed!\nCheck: ${BUILD_URL}",
+                to: "maanyav30@gmail.com"
+            )
         }
     }
-}
