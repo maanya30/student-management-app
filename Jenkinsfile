@@ -1,7 +1,4 @@
 
-    
-
-Jenkinsfile
 pipeline {
     agent any
 
